@@ -196,9 +196,13 @@ sumando un entero fijo a cada caracter de la cadena.
 
 ## Criterios de Corrección
 - Se debe compilar el código con los flags de compilación: Wall -Pedantic -Werror -Wextra -Wconversion -std=gnu11
+
 - Dividir el código en módulos de manera juiciosa.
+
 - Estilo de código.
+
 - El código no debe contener errores, ni warnings.
+
 - El código no debe contener errores de cppcheck.
 
 ## Qué se debe Entregar
