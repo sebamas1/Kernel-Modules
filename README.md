@@ -188,11 +188,13 @@ drwxr-xr-x  3 root  root         100 nov  1 21:11 dri
 Agregar un manejador al sistema significa registrarlo con el kernel, al realizar esta operación el kernel asigna un nro (Major number ) que identifica al manejador, ver /proc/devices Para registrar el dispositivo se utiliza la función _register_chrdev_ definida en fs.h
 
 ## Tareas:
-– Escribir un manejador de dispositivos de caracter que cuando se escriba una cadena de caracteres en su archivo de dispositivo tome esa cadena y la “encripte”
+- Escribir un manejador de dispositivos de caracter que cuando se escriba una cadena de caracteres en su archivo de dispositivo tome esa cadena y la “encripte”
 sumando un entero fijo a cada caracter de la cadena.
-– Cuando se lea del archivo de dispositivo encriptador el manejador entrege la ultima cadena encriptada.
-– Escribir un manejador de dispositivos de caracter que cuando se escriba una cadena de caracteres en su archivo de dispositivo tome esa cadena y la
-“desecnripte” restando el mismo entero del primer manejador a cada caracter de la cadena.– Cuando se lea del archivo de dispositivo desencriptador el manejador entrege la ultima cadena desencriptada.
+
+- Cuando se lea del archivo de dispositivo encriptador el manejador entrege la ultima cadena encriptada.
+- Escribir un manejador de dispositivos de caracter que cuando se escriba una cadena de caracteres en su archivo de dispositivo tome esa cadena y la
+“desecnripte” restando el mismo entero del primer manejador a cada caracter de la cadena.
+- Cuando se lea del archivo de dispositivo desencriptador el manejador entrege la ultima cadena desencriptada.
 
 ## Criterios de Corrección
 - Se debe compilar el código con los flags de compilación: Wall -Pedantic -Werror -Wextra -Wconversion -std=gnu11
