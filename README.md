@@ -16,29 +16,34 @@ La tarea de los módulos es presentar al kernel un conjunto estandarizado y bien
 ## ¿Cómo se carga un módulo?
 El proceso de carga típico de un módulo (simplificado) es el siguiente. Cuando el kernel necesita una funcionalidad que no está presente, el demonio de módulos del kernel kmod ejecuta el binario modprobe para cargar el módulo necesario.
 
-Claramente kmod “sabe” cual es el módulo que necesita cargar para satisfacer una necesidad particular. El programa modprobe verifica si el módulo en cuestión necesita de la presencia de otros módulos para funcionar correctamente. Una vez que ha definido cuales son los módulosque deben ser cargados y donde se encuentran ubicados modprobe utiliza el programa insmod para cargar estos módulos en memoria y ponerlos a disposición del kernel para ser utilizados.
-Podemos ver que módulos están cargados en este momento y cuales son sus dependencias con el comando _lsmod_
+Claramente kmod “sabe” cual es el módulo que necesita cargar para satisfacer una necesidad particular. El programa modprobe verifica si el módulo en cuestión necesita de la presencia de otros módulos para funcionar correctamente. Una vez que ha definido cuales son los módulos que deben ser cargados y donde se encuentran ubicados modprobe utiliza el programa insmod para cargar estos módulos en memoria y ponerlos a disposición del kernel para ser utilizados.
+Podemos ver que módulos están cargados en este momento y cuales son sus dependencias con el comando  _lsmod_
 
 ## ¿Cómo se compila un módulo?
 Como indicamos arriba los módulos utilizan para comunicarse con el kernel una interfaz previamente definida, esta interfaz está descrita en los archivos de header del kernel mismo.
 Para compilar nuestro propio módulo vamos a necesitar entonces los headers del kernel que estamos corriendo.
 Primero averiguemos que kernel estamos corriendo:
+
 ```Bash
 malonso@qui-gon ~$ uname -r
 5.3.1-arch1-1-ARCH
 malonso@qui-gon ~$
 ```
-Ahora instalemos los headers de este kernel. En el caso de sistemas basados en Arch podemos usar _pacman -Ss linux-headers_ para averiguar que paquete tenemos que
+
+Ahora instalemos los headers de este kernel. En el caso de sistemas basados en Arch podemos usar  _pacman -Ss linux-headers_  para averiguar que paquete tenemos que
 instalar, por ejemplo:
+
 ```Bash
 malonso@qui-gon ~$ sudo pacman -Ss linux-headers
 core/linux-headers 5.3.1.arch1-1 [installed]
       Header files and scripts for building modules for Linux kernel
 malonso@qui-gon ~$
 ```
+
 En sistemas basados en debian podemos usar ​ apt search linux-headers.
 Instalamos el paquete con ​ pacman -S ​ en sistemas basados en Arch o aptitude install en sistemas basados en Debian, o con el manejador de paquetes correspondiente a la distro.
 Ya tenemos las herramientas necesarias para compilar nuestro módulo. Escribamos ese módulo de ejemplo para probar, este ejemplo esta tomado literalmente de
+
 [https://static.lwn.net/images/pdf/LDD3/ch02.pdf]
 
 ```C
@@ -60,9 +65,9 @@ module_init(hello_init);
 module_exit(hello_exit);
 ```
 
-De estas pocas líneas podemos aprender mucho, vemos que no hay una función main(). Solo están dos funciones _hello_init()_ y _hello_exit()_ estas dos funciones se registran con _module_init()_ y _module_exit()_ respectivamente y son las que se ejecutan al cargar el módulo y al descargarlo.
-También vemos la función _printk()_ esta es una función que el kernel utiliza para realizar el registro de eventos es por eso que junto con el mensaje se debe dar además una prioridad. (ver _linux/kernel.h_ para mas detalles).
-Guardemos este código en un archivo por ejemplo _hello.c_ y veamos cómo compilarlo. Debajo tenemos un ejemplo de Makefile para compilar este pequeño módulo que hemos escrito
+De estas pocas líneas podemos aprender mucho, vemos que no hay una función main(). Solo están dos funciones  _hello_init()_  y  _hello_exit()_  estas dos funciones se registran con  _module_init()_  y  _module_exit()_  respectivamente y son las que se ejecutan al cargar el módulo y al descargarlo.
+También vemos la función  _printk()_  esta es una función que el kernel utiliza para realizar el registro de eventos es por eso que junto con el mensaje se debe dar además una prioridad. (ver  _linux/kernel.h_  para mas detalles).
+Guardemos este código en un archivo por ejemplo  _hello.c_  y veamos cómo compilarlo. Debajo tenemos un ejemplo de Makefile para compilar este pequeño módulo que hemos escrito
 
 ```Bash
 #if KERNELRELEASE is defined, we've been invoked from the
@@ -95,7 +100,7 @@ make[1]: Entering directory '/usr/lib/modules/5.3.1-arch1-1-ARCH/build'
 make[1]: Leaving directory '/usr/lib/modules/5.3.1-arch1-1-ARCH/build'
 malonso@qui-gon tp3$
 ```
-Notemos que ahora tenemos nuestro módulo _hello.ko_
+Notemos que ahora tenemos nuestro módulo  _hello.ko_ 
 
 ```Bash
 malonso@qui-gon tp4$ ls -l
@@ -117,6 +122,10 @@ Ahora solo resta cargar el módulo y verlo funcionar. Dado que el código que ej
 ```Bash
 [root@qui-gon tp4]# insmod ./hello.ko
 [root@qui-gon tp4]#
+
+Para descargar rmmod hello
+
+Podes ver los modulos cargados en /proc/modules
 ```
 
 Ahora veamos si la carga funciono:
@@ -163,10 +172,11 @@ exe="/bin/su" hostname=? addr=? terminal=/dev/pts/0 res=success'
 ## Manejadores de dispositivos de tipo caracter
 Las operaciones que se pueden realizar sobre un dispositivo de tipo caracter están definidas por el kernel asi como el nombre de las funciones que implementan estas operaciones ver linux/fs.h.
 Por ejemplo un manejador tiene que definir una función que lea del dispositivo esa funcion debe llamarse read segun esta definido en fs.h
-No todos los manejadores deben implementar todas las funciones, por ejemplo unmanejador de una placa de video no necesita implementar una función para leer una estructura de directorios (readdir)
+No todos los manejadores deben implementar todas las funciones, por ejemplo un manejador de una placa de video no necesita implementar una función para leer una estructura de directorios (readdir)
 
 ## Registrando un dispositivo
 Los dispositivos de caracteres son utilizados accediendo a archivos de dispositivo. Estos archivos están ubicados en /dev
+
 ```Bash
 malonso@qui-gon tp4$ ls -l /dev
 total 0
@@ -185,7 +195,8 @@ drwxr-xr-x  7 root  root         140 nov  1 21:11 disk
 drwxr-xr-x  3 root  root         100 nov  1 21:11 dri
 ...
 ```
-Agregar un manejador al sistema significa registrarlo con el kernel, al realizar esta operación el kernel asigna un nro (Major number ) que identifica al manejador, ver /proc/devices Para registrar el dispositivo se utiliza la función _register_chrdev_ definida en fs.h
+
+Agregar un manejador al sistema significa registrarlo con el kernel, al realizar esta operación el kernel asigna un nro (Major number ) que identifica al manejador, ver /proc/devices Para registrar el dispositivo se utiliza la función  _register_chrdev_  definida en fs.h
 
 ## Tareas:
 - Escribir un manejador de dispositivos de caracter que cuando se escriba una cadena de caracteres en su archivo de dispositivo tome esa cadena y la “encripte”
