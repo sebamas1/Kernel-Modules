@@ -1,17 +1,13 @@
-#if KERNELRELEASE is defined, we've been invoked from the
-# kernel build system and can use its language.
+##CFLAGS_encriptador.o := -Wall -Werror -Wextra -Wconversion -std=gnu11 #-pedantic
 
-ifneq ($(KERNELRELEASE),)
-	obj-m := hello.o
-    
-# Otherwise we were called directly from the command
-# line; invoke the kernel build system.
-else
-	KERNELDIR ?= /lib/modules/$(shell uname -r)/build
-	PWD := $(shell pwd)
-default:
-	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
-endif
+CONFIG_MODULE_SIG=n
+
+obj-m += encriptador.o
+
+all:
+	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
 
 clean:
-	rm -rf *.o *.ko *.mod *.symvers *.order
+	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
+	
+	
