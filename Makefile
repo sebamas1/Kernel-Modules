@@ -1,6 +1,6 @@
-##CFLAGS_encriptador.o := -Wall -Werror -Wextra -Wconversion -std=gnu11 #-pedantic
-
 CONFIG_MODULE_SIG=n
+
+CFLAGS_encriptador.o := -Wall -Werror -Wextra -Wconversion -std=gnu11 #-pedantic
 
 obj-m += encriptador.o
 
