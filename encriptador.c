@@ -53,16 +53,23 @@ ssize_t device_read(__attribute__((unused))  struct file *filp,
 		__attribute__((unused))  loff_t *curOffset) {
 	//take data from kernel space (device) to user space (process)
 	//copy_to_user (destination,source,sizeToTransfer)
-	printk(KERN_INFO "TP4: Reading from device\n");
-	 ret = (int) copy_to_user(bufStoreData,my_device_data.data, bufCount);
+	 printk(KERN_INFO "TP4: Reading from device\n");
+	 ret = (int) copy_to_user(bufStoreData, my_device_data.data, bufCount);
 	 return ret;
 }
 ssize_t device_write(__attribute__((unused)) struct file *filp, const char *bufSourceData,
 		size_t bufCount, __attribute__((unused)) loff_t *curOffset) {
 
+
 	printk(KERN_INFO "TP4: writing to device\n");
 
 	ret = (int) copy_from_user(my_device_data.data, bufSourceData, bufCount);
+
+	for(int i = 0; i < bufCount; i++) {
+		if( (int) my_device_data.data[i] == 10) break;
+		my_device_data.data[i] = (char) ((int) my_device_data.data[i] + 3);
+	}
+
 	return ret;
 }
 int device_close(__attribute__((unused)) struct inode *inode, __attribute__((unused)) struct file *filp) {
@@ -104,12 +111,9 @@ static int driver_entry(void) {
 }
 
 static void driver_exit(void) {
-	//(5) unregister everything in reverse order
-	//(a)
 	cdev_del(mydev);
-	//(b)
 	unregister_chrdev_region(dev_num, 1);
-printk(KERN_ALERT "TP4: unloaded module\n");
+	printk(KERN_ALERT "TP4: unloaded module\n");
 }
 
 module_init( driver_entry);
