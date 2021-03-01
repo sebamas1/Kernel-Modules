@@ -48,7 +48,7 @@ void operar_encriptador(){
 
 void operar_desencriptador(){
 	int fd_desencriptador, fd_encriptador;
-		char read_write_choice, encrypted_buffer[1000], decrypted_buffer[1000];
+		char encrypted_buffer[1000], decrypted_buffer[1000];
 
 		fd_encriptador = open(ENCRIPTADOR, O_RDWR);
 		fd_desencriptador = open(DESENCRIPTADOR, O_RDWR);
