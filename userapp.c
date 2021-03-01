@@ -12,10 +12,11 @@
 
 #define ENCRIPTADOR "/dev/encriptador"
 #define DESENCRIPTADOR "/dev/desencriptador"
+#define BUFFER_SIZE 1000
 
 void operar_encriptador(){
 	int fd_encriptador;
-	char read_write_choice, read_buffer[1000], write_buffer[1000];
+	char read_write_choice, read_buffer[BUFFER_SIZE], write_buffer[BUFFER_SIZE];
 
 	fd_encriptador = open(ENCRIPTADOR, O_RDWR);
 
@@ -36,7 +37,7 @@ void operar_encriptador(){
 		break;
 	case 'w':
 		printf("Ingresar la cadena a encriptar: ");
-		scanf(" %[^\n]", write_buffer);
+		scanf(" %1000[^\n]", write_buffer);
 		write(fd_encriptador, write_buffer, sizeof(write_buffer));
 		break;
 	default:
@@ -48,7 +49,7 @@ void operar_encriptador(){
 
 void operar_desencriptador(){
 	int fd_desencriptador, fd_encriptador;
-		char encrypted_buffer[1000], decrypted_buffer[1000];
+		char encrypted_buffer[BUFFER_SIZE], decrypted_buffer[BUFFER_SIZE];
 
 		fd_encriptador = open(ENCRIPTADOR, O_RDWR);
 		fd_desencriptador = open(DESENCRIPTADOR, O_RDWR);

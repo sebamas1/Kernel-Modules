@@ -8,6 +8,7 @@ obj-m += encriptador.o desencriptador.o
 
 all:
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
+	cppcheck --enable=all encriptador.c desencriptador.c userapp.c
 	gcc $(CFLAGS) -o userapp userapp.c
 
 clean:
