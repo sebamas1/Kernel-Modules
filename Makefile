@@ -16,4 +16,12 @@ clean:
 	rm -f *.o
 	rm -f userapp
 	
+load:
+	sudo insmod encriptador.ko
+	sudo insmod desencriptador.ko
+	
+unload:
+	sudo rmmod encriptador
+	sudo rmmod desencriptador
+	
 	

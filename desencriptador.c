@@ -31,7 +31,7 @@ MODULE_LICENSE("Dual BSD/GPL");
 struct cdev *mydev;
 unsigned int major_number;
 dev_t dev_num;
-int ret;
+long int ret;
 
 struct device_data {
 	char data[BUFFER_SIZE];
@@ -54,23 +54,31 @@ ssize_t device_read(__attribute__((unused))     struct file *filp,
 		__attribute__((unused))     size_t bufCount,
 		__attribute__((unused))     loff_t *curOffset) {
 	printk(KERN_INFO "desencriptador: Reading from device\n");
-
-	ret = (int) copy_to_user(bufStoreData, my_device_data.data, bufCount);
+	ret = (long int) copy_to_user(bufStoreData, my_device_data.data, bufCount);
 	return ret;
 }
 ssize_t device_write(__attribute__((unused))    struct file *filp,
 		const char *bufSourceData, size_t bufCount,
 		__attribute__((unused))    loff_t *curOffset) {
 
+	long int size_copiado = 0;
+	long unsigned int size_a_copiar = strlen(bufSourceData);
+
 	printk(KERN_INFO "desencriptador: writing to device\n");
 
-	ret = (int) copy_from_user(my_device_data.data, bufSourceData, bufCount);
-
-	for (int i = 0; i < strlen(bufSourceData); i++) {
-		my_device_data.data[i] = (char) ((int) my_device_data.data[i] - 3);
+	if(size_a_copiar > BUFFER_SIZE){
+		printk(KERN_ALERT "desencriptador: buffer overflow\n");
+		return -1;
 	}
 
-	return ret;
+	ret = (long int) copy_from_user(my_device_data.data, bufSourceData, bufCount);
+
+	for (int i = 0; i < size_a_copiar; i++) {
+		my_device_data.data[i] = (char) ((int) my_device_data.data[i] - 3);
+		size_copiado++;
+	}
+
+	return size_copiado;
 }
 int device_close(__attribute__((unused))    struct inode *inode,
 		__attribute__((unused))    struct file *filp) {
@@ -87,7 +95,7 @@ static int driver_entry(void) {
 	ret = alloc_chrdev_region(&dev_num, 0, 1, DEVICE_NAME);
 	if (ret < 0) {
 		printk(KERN_ALERT "desencriptador: no se pudo alocar el major number\n");
-		return ret;
+		return (int) ret;
 	}
 	major_number = MAJOR(dev_num); //extracts the major number and store in our variable (MACRO)
 	printk(KERN_INFO "desencriptador: major number is %d \n", major_number);
@@ -100,7 +108,7 @@ static int driver_entry(void) {
 	ret = cdev_add(mydev, dev_num, 1);
 	if (ret < 0) {
 		printk(KERN_ALERT "desencriptador: unable to add cdev to kernel\n");
-		return ret;
+		return (int) ret;
 	}
 //	Initialize our semaphore
 	sema_init(&my_device_data.sem, 1);  //initial value of one
