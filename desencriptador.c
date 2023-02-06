@@ -16,11 +16,12 @@
 #pragma GCC diagnostic ignored "-Wvariadic-macros"
 #include <linux/module.h>
 #include <linux/kernel.h>
-#include <linux/fs.h>
+#include <linux/fs.h> //para usar open/close read/write
 #include <linux/cdev.h>
 #include <linux/semaphore.h>
-#include <linux/uaccess.h>
+#include <linux/uaccess.h> //copy_to_user y copy_from_user
 #include <linux/random.h>
+#include <linux/string.h> //strlen
 #pragma GCC diagnostic pop
 
 MODULE_LICENSE("Dual BSD/GPL");
@@ -57,12 +58,13 @@ ssize_t device_read(__attribute__((unused))     struct file *filp,
 	ret = (long int) copy_to_user(bufStoreData, my_device_data.data, bufCount);
 	return ret;
 }
+
 ssize_t device_write(__attribute__((unused))    struct file *filp,
 		const char *bufSourceData, size_t bufCount,
 		__attribute__((unused))    loff_t *curOffset) {
 
 	long int size_copiado = 0;
-	long unsigned int size_a_copiar = strlen(bufSourceData);
+	long unsigned int size_a_copiar = (long unsigned int) strnlen_user(bufSourceData, BUFFER_SIZE);
 
 	printk(KERN_INFO "desencriptador: writing to device\n");
 

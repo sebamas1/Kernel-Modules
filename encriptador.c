@@ -20,6 +20,7 @@
 #include <linux/semaphore.h>
 #include <linux/uaccess.h>
 #include <linux/random.h>
+
 #pragma GCC diagnostic pop
 
 MODULE_LICENSE("Dual BSD/GPL");
@@ -60,8 +61,10 @@ ssize_t device_write(__attribute__((unused)) struct file *filp, const char *bufS
 		size_t bufCount, __attribute__((unused)) loff_t *curOffset) {
 
 	long int size_copiado = 0;
-	long unsigned int size_a_copiar = strlen(bufSourceData);
+	long unsigned int size_a_copiar = (long unsigned int) strnlen_user(bufSourceData, BUFFER_SIZE);
 
+
+	memset(my_device_data.data, 0, BUFFER_SIZE);
 	printk(KERN_INFO "encriptador: writing to device\n");
 
 	if(size_a_copiar > BUFFER_SIZE){

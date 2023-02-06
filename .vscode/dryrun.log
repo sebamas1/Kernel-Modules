@@ -1,0 +1,7 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/sebastian/Documentos/SO1/soi-kernel-modules-sebamas1'
+make -C /lib/modules/5.4.0-137-generic/build M=/home/sebastian/Documentos/SO1/soi-kernel-modules-sebamas1 modules
+cppcheck --enable=all encriptador.c desencriptador.c userapp.c
+gcc -Wall -pedantic -Werror -Wextra -Wconversion -std=gnu11 -o userapp userapp.c
+make: Leaving directory '/home/sebastian/Documentos/SO1/soi-kernel-modules-sebamas1'
+ 

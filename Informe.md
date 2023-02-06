@@ -1,4 +1,4 @@
-#Kernel modules
+# Kernel modules
 
 
 ### Método de uso
@@ -67,11 +67,11 @@ El código esta fuertemente basado en el código del canal de youtube "SolidusCo
 
 Las funciones principalmente modificadas fueron la de read y write. Se modificó la función de write del encriptador para que sume un entero positivo a cada caracter, "encriptando" de esta forma, la cadena. La funcion de write del desencriptador fue modificada para que reste el mismo entero a la cadena, "desencriptando" la información.
 
-####userapp
+#### userapp
 
 La userapp se encarga de facilitar la demostración del funcionamiento de los módulos. Lo que hace esta, es operar sobre los device file que estan asociados a los módulos. Cuando se quiere escribir sobre el encriptador, llama a la función write de este, y cuando se quiere leer la información encriptada, llama a la función read. Si se desea usar el desencriptador, la userapp lee la información encriptada guardada en el módulo encriptador, la escribe en el device file asociado al desencriptador, y luego lee la información desencriptada del módulo desencriptador para luego imprimirla por la stdout.
 
-####Bugs conocidos
+#### Bugs conocidos
 
 Si primero se ingresa una cadena larga, y luego se ingresa una cadena más corta(al encriptador), puede quedar un residuo de la anterior cadena. Sin embargo, considero que no era necesario arreglarlo, ya que no es el propósito del TP.
 
